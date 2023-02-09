@@ -1,0 +1,22 @@
+@import "./base.scss";
+
+@mixin flexCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+$yellow: rgb(255, 196, 0);
+$ltYellow: rgb(255, 210, 60);
+
+#app {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  max-width: 1280px;
+  font-weight: normal;
+}
+
+a {
+  text-decoration: none;
+}
