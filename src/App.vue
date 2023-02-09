@@ -1,20 +1,15 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import SearchForm from './components/SearchForm.vue';
 </script>
 
 <template>
   <header>
-    <img alt="Pokemon logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <RouterLink to="/">
+      <img alt="Pokemon logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    </RouterLink>
+    <SearchForm />
   </header>
-
-  <div class="wrapper">
-
-
-    <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
-    </nav>
-  </div>
 
   <RouterView />
 </template>
@@ -30,6 +25,7 @@ import { RouterLink, RouterView } from 'vue-router'
 header {
   width: 100%;
   @include flexCenter;
+  flex-direction: column
 }
 
 main {
