@@ -18,6 +18,7 @@ export default defineComponent({
         const submitForm = (e) => {
             e.preventDefault();
             router.push(`/search/${search.value}`)
+            search.value = ''
         }
         return { search, submitForm };
     },
