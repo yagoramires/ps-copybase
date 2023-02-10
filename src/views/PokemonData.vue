@@ -43,71 +43,84 @@
   </main>
 </template>
 
-<script setup>
-import { reactive, ref } from 'vue';
-import { useRoute, RouterLink } from 'vue-router';
+<script >
+import { defineComponent, ref, reactive, onMounted, onUpdated } from 'vue';
+import { useRoute, useRouter, RouterLink } from 'vue-router';
 import axios from 'axios';
-const route = useRoute();
 
 const baseUrl = 'https://pokeapi.co/api/v2';
 
-const loading = ref(false);
-const pokemonData = reactive({});
-const evolutionData = ref([]);
+export default defineComponent({
+  name: 'PokemonList',
+  setup() {
+    const route = useRoute();
+    let oldId = route.params.id
+    const loading = ref(false);
+    const pokemonData = reactive({});
+    const evolutionData = ref([]);
 
+    const fetchPokemonData = async () => {
+      loading.value = true;
+      const fetchData = await axios.get(`${baseUrl}/pokemon/${route.params.id}`);
 
-const fetchPokemonData = async () => {
-  loading.value = true;
-  const fetchData = await axios.get(`${baseUrl}/pokemon/${route.params.id}`);
+      const data = {
+        id: fetchData.data.id,
+        name: fetchData.data.name,
+        abilities: fetchData.data.abilities.map(ability => ability.ability.name),
+        image: fetchData.data.sprites.front_default,
+        types: fetchData.data.types.map(type => type.type.name),
+      };
 
-  const data = {
-    id: fetchData.data.id,
-    name: fetchData.data.name,
-    abilities: fetchData.data.abilities.map(ability => ability.ability.name),
-    image: fetchData.data.sprites.front_default,
-    types: fetchData.data.types.map(type => type.type.name),
+      fetchSpecies(fetchData.data.species.url, data);
+      loading.value = false;
+    };
 
-  }
+    const fetchSpecies = async (url, data) => {
+      const fetchData = await axios.get(url);
+      const newData = {
+        ...data,
+        color: fetchData.data.color.name,
+        evolvesFrom: fetchData.data.evolves_from_species?.url,
+        habitat: fetchData.data.habitat.name,
+      };
 
-  fetchSpecies(fetchData.data.species.url, data);
-  loading.value = false;
-};
+      pokemonData.value = newData
 
-const fetchSpecies = async (url, data) => {
-  const fetchData = await axios.get(url);
-  const newData = {
-    ...data,
-    color: fetchData.data.color.name,
-    evolvesFrom: fetchData.data.evolves_from_species?.url,
-    habitat: fetchData.data.habitat.name,
+      fetchEvolutions(fetchData.data.evolution_chain.url, data.id);
+    };
 
-  }
+    const fetchEvolutions = async (url, id) => {
+      const fetchData = await axios.get(url);
 
-  pokemonData.value = newData
+      const evolutionChain = [
+        fetchData.data?.chain.species.url,
+        fetchData.data?.chain.evolves_to[0].species.url,
+        fetchData.data?.chain.evolves_to[0].evolves_to[0].species.url
+      ];
+      evolutionChain.forEach(data => fetchEvolutionData(data, id));
+    };
 
-  fetchEvolutions(fetchData.data.evolution_chain.url, data.id);
-};
+    const fetchEvolutionData = async (url, id) => {
+      const fetchData = await axios.get(url.replace("pokemon-species", "pokemon"));
+      if (fetchData.data.id === id) return
+      const data = { name: fetchData.data.name, id: fetchData.data.id, image: fetchData.data.sprites.front_default };
+      evolutionData.value = [...evolutionData.value, data];
+      return data;
+    };
 
-const fetchEvolutions = async (url, id) => {
-  const fetchData = await axios.get(url);
+    onMounted(fetchPokemonData);
+    onUpdated(() => {
+      if (route.params.id !== oldId) {
+        console.log(route.params.id)
+        fetchPokemonData()
+        evolutionData.value = [];
+        oldId = route.params.id
+      }
+    });
 
-  const evolutionChain = [
-    fetchData.data?.chain.species.url,
-    fetchData.data?.chain.evolves_to[0].species.url,
-    fetchData.data?.chain.evolves_to[0].evolves_to[0].species.url
-  ]
-  evolutionChain.forEach(data => fetchEvolutionData(data, id))
-};
-
-const fetchEvolutionData = async (url, id) => {
-  const fetchData = await axios.get(url.replace("pokemon-species", "pokemon"));
-  if (fetchData.data.id === id) return
-  const data = { name: fetchData.data.name, id: fetchData.data.id, image: fetchData.data.sprites.front_default }
-  evolutionData.value = [...evolutionData.value, data]
-  return data
-}
-
-fetchPokemonData();
+    return { pokemonData, loading, evolutionData };
+  },
+});
 </script>
 
 <style lang="scss">

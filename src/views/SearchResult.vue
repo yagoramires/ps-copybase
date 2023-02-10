@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, onMounted } from 'vue';
+import { defineComponent, ref, reactive, onMounted, onUpdated } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 
@@ -52,6 +52,7 @@ export default defineComponent({
   name: 'PokemonList',
   setup() {
     const route = useRoute();
+    let oldId = route.params.id
     const loading = ref(false);
     const pokemonData = reactive({});
     const evolutionData = ref([]);
@@ -106,6 +107,15 @@ export default defineComponent({
     };
 
     onMounted(fetchPokemonData);
+
+    onUpdated(() => {
+      if (route.params.id !== oldId) {
+        console.log(route.params.id)
+        fetchPokemonData()
+        evolutionData.value = [];
+        oldId = route.params.id
+      }
+    });
 
     return { pokemonData, loading, evolutionData };
   },
