@@ -1,8 +1,8 @@
 <template>
   <main v-if="!loading">
     <div class="pokemonCard">
-      <img :src="pokemonData.value?.sprites.front_default" alt="pokemon" class="pokemonCard__image" />
-      <h1 class="pokemonCard__title">{{ pokemonData.value?.name }}</h1>
+      <img :src="pokemonData.value.image" alt="pokemon" class="pokemonCard__image" />
+      <h1 class="pokemonCard__title">{{ pokemonData.value.name }}</h1>
     </div>
     <div class="evolutionsCard">
       <h2>Evoluções</h2>
@@ -33,12 +33,25 @@ const evolutionData = ref([]);
 const fetchPokemonData = async () => {
   loading.value = true;
   const fetchData = await axios.get(`${baseUrl}/pokemon/${route.params.id}`);
-  pokemonData.value = fetchData.data;
-  fetchSpecies(pokemonData.value.species.url);
+
+  const data = {
+    id: fetchData.data.id,
+    name: fetchData.data.name,
+    abilities: fetchData.data.abilities.map(ability => ability.ability.name),
+  }
+
+  fetchSpecies(fetchData.data.species.url, data);
   loading.value = false;
 };
 const fetchSpecies = async (url) => {
-  const fetchData = await axios.get(url);
+  const fetchData = await axios.get(url, data);
+  console.log(fetchData.data)
+
+  newData = {
+    ...data
+  }
+  console.log(newData)
+
   fetchEvolutions(fetchData.data.evolution_chain.url);
 };
 
@@ -62,7 +75,6 @@ const fetchEvolutions = async (url) => {
 const fetchEvolutionData = async (url) => {
   const fetchData = await axios.get(url.replace("pokemon-species", "pokemon"));
   const data = { name: fetchData.data.name, id: fetchData.data.id, image: fetchData.data.sprites.front_default }
-  // console.log(data)
   evolutionData.value = [...evolutionData.value, data]
   return data
 }
