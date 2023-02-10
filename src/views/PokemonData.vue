@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <div class="evolutionsCard">
+    <div v-if="evolutionData.length > 0" class="evolutionsCard">
       <h2 class="evolutionCard__title">Evolution Chain</h2>
       <div class="evolutionContainer">
         <div v-for="(pokemon, index) in evolutionData" :key="index" class="evolutionContainer__card">
