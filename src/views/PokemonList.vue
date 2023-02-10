@@ -1,5 +1,3 @@
-
-
 <template>
   <main>
 
@@ -8,18 +6,20 @@
 
       <div>
         <ul class="list">
-          <li v-for="(pokemon, index) in pokemonList" :key="index">
-            <RouterLink :to="{ name: 'pokemon', params: { id: index } }" class="list___item">
+          <li v-for="(pokemon, index) in pokemons" :key="index">
+            <RouterLink :to="{ name: 'pokemon', params: { id: index + 1 } }" class="list___item">
               {{ pokemon.name }}
             </RouterLink>
           </li>
-
         </ul>
       </div>
 
       <div class="buttonContainer">
-        <button @click="loadMorePokemon" class="buttonContainer__btn">{{
-          fetchingPokemon? '...': 'Carregar mais'
+        <button v-if="prevPage !== null" @click="loadPrevPage" class="buttonContainer__btn">{{
+          fetchingPokemon? '...': 'Voltar'
+        }}</button>
+        <button @click="loadNextPage" class="buttonContainer__btn">{{
+          fetchingPokemon? '...': 'Próxima'
         }}</button>
       </div>
     </div>
@@ -27,36 +27,40 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
+import api from '@/services/api'
 import axios from 'axios'
-
-const baseUrl = 'https://pokeapi.co/api/v2'
 
 export default defineComponent({
   name: 'PokemonList',
-  data() {
-    return {
-      pokemonList: [],
-      nextPage: null,
-      fetchingPokemon: false,
+  setup() {
+    const pokemons = ref([])
+    let nextPage = ref('')
+    let prevPage = ref('')
+    const fetchPokemons = async () => {
+      const fetchData = await api.get('/pokemon')
+      nextPage.value = fetchData.data.next
+      prevPage.value = fetchData.data.previous
+      pokemons.value = (fetchData.data.results)
     }
-  },
-  methods: {
-    async fetchPokemons() {
-      const pokemonsResponse = await axios.get(`${baseUrl}/pokemon`)
-      this.pokemonList = pokemonsResponse.data.results
-      this.nextPage = pokemonsResponse.data.next
-    },
-    async loadMorePokemon() {
-      this.fetchingPokemon = true
-      const pokemonsResponse = await axios.get(this.nextPage)
-      this.pokemonList.push(...(pokemonsResponse.data.results || []))
-      this.nextPage = pokemonsResponse.data.next
-      this.fetchingPokemon = false
+
+    const loadNextPage = async () => {
+      const fetchData = await axios.get(nextPage.value)
+      pokemons.value = (fetchData.data.results)
+      nextPage.value = fetchData.data.next
+      prevPage.value = fetchData.data.previous
     }
-  },
-  async mounted() {
-    await this.fetchPokemons()
+
+    const loadPrevPage = async () => {
+      const fetchData = await axios.get(prevPage.value)
+      pokemons.value = (fetchData.data.results)
+      nextPage.value = fetchData.data.next
+      prevPage.value = fetchData.data.previous
+    }
+
+    onMounted(fetchPokemons);
+
+    return { pokemons, loadNextPage, loadPrevPage, prevPage, nextPage }
   }
 })
 </script>
@@ -92,6 +96,7 @@ export default defineComponent({
 .buttonContainer {
   width: 100%;
   @include flexCenter;
+  gap: 1rem;
 }
 
 .buttonContainer__btn {
