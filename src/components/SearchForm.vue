@@ -1,6 +1,6 @@
 <template>
     <form class="form" @submit="submitForm($event)">
-        <input type="text" v-model="input" placeholder="Pesquisar Pokemon" class="form__input form__input--text" />
+        <input type="text" v-model="search" placeholder="Pesquisar Pokemon" class="form__input form__input--text" />
         <input type="submit" value="Pesquisar" class="form__input form__input--submit" />
     </form>
 </template>
@@ -17,8 +17,7 @@ export default defineComponent({
         const router = useRouter()
         const submitForm = (e) => {
             e.preventDefault();
-            console.log(useRouter())
-            router.push('/search/6')
+            router.push(`/search/${search.value}`)
         }
         return { search, submitForm };
     },
