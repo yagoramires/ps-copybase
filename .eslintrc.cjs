@@ -10,11 +10,11 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest',
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
   },
-  'prettier/prettier': [
-    'error',
-    {
-      endOfLine: 'auto',
-    },
-  ],
 };

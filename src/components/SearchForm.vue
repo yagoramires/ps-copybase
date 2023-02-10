@@ -1,16 +1,29 @@
 <template>
-    <form class="form">
+    <form class="form" @submit="submitForm($event)">
         <input type="text" v-model="input" placeholder="Pesquisar Pokemon" class="form__input form__input--text" />
-        <input type="submit" value="Pesquisar" class="form__input form__input--submit">
+        <input type="submit" value="Pesquisar" class="form__input form__input--submit" />
     </form>
 </template>
 
 <script>
-export default {
+import { defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router'
 
-}
+
+export default defineComponent({
+    name: 'PokemonSearch',
+    setup() {
+        const search = ref('');
+        const router = useRouter()
+        const submitForm = (e) => {
+            e.preventDefault();
+            console.log(useRouter())
+            router.push('/search/6')
+        }
+        return { search, submitForm };
+    },
+});
 </script>
-
 
 <style lang="scss" scoped>
 @use '../assets/main.scss' as *;
@@ -23,27 +36,26 @@ export default {
     outline: none;
     border: none;
     padding: 1rem;
-
 }
 
 .form__input--text {
-    border-top-left-radius: .5rem;
-    border-bottom-left-radius: .5rem;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
 }
 
 .form__input--submit {
-    border-top-right-radius: .5rem;
-    border-bottom-right-radius: .5rem;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
     background: $yellow;
-    transition: all .3s;
+    transition: all 0.3s;
     font-weight: bold;
     color: #fff;
     cursor: pointer;
 }
 
 .form__input--submit {
-    border-top-right-radius: .5rem;
-    border-bottom-right-radius: .5rem;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
     background: $ltYellow;
 }
 </style>

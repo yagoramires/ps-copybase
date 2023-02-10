@@ -129,14 +129,12 @@ export default defineComponent({
 }
 
 @media (min-width: 1024px) {
-
   .title {
     margin: 2rem 0;
   }
 
   .list {
     grid-template-columns: repeat(4, 1fr);
-
   }
 
   .buttonContainer__btn {
