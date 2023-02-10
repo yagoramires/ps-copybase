@@ -15,10 +15,15 @@ export default {
 <style lang="scss" scoped>
 @use '../assets/main.scss' as *;
 
+.form {
+    margin-top: -3rem;
+}
+
 .form__input {
     outline: none;
     border: none;
     padding: 1rem;
+
 }
 
 .form__input--text {

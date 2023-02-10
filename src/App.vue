@@ -19,7 +19,8 @@ import SearchForm from './components/SearchForm.vue';
 
 .logo {
   width: 250px;
-  height: 250px
+  height: 250px;
+  margin-top: -3rem;
 }
 
 header {
@@ -32,5 +33,12 @@ main {
   @include flexCenter;
   flex-direction: column;
   gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .logo {
+    width: 300px;
+    height: 300px;
+  }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="mainContainer">
     <div class="listContainer">
       <h2 class="title">Pokemons</h2>
 
@@ -75,10 +75,14 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use '../assets/main.scss' as *;
 
+.mainContainer {
+  width: 100%;
+  padding: 1rem;
+}
+
 .listContainer {
   @include flexCenter;
   flex-direction: column;
-  padding: 1rem;
 }
 
 .title {
@@ -90,7 +94,9 @@ export default defineComponent({
 .list {
   list-style-type: none;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  padding: 0;
+  justify-items: start;
   gap: 1rem;
 }
 
@@ -122,5 +128,19 @@ export default defineComponent({
   background-color: $ltYellow;
 }
 
-@media (min-width: 1024px) {}
+@media (min-width: 1024px) {
+
+  .title {
+    margin: 2rem 0;
+  }
+
+  .list {
+    grid-template-columns: repeat(4, 1fr);
+
+  }
+
+  .buttonContainer__btn {
+    margin-top: 4rem;
+  }
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <main v-if="!loading">
+  <main v-if="!loading" class="mainContainer">
     <div class="pokemonCard">
       <h1 class="pokemonCard__title">{{ `${pokemonData.value?.name} #${pokemonData.value?.id}` }}</h1>
       <img :src="pokemonData.value?.image" alt="pokemon" class="pokemonCard__image" />
@@ -20,15 +20,17 @@
           <h3 class="dataInfoContainer__title">Abilities:</h3>
           <ul class="dataInfoContainer__list">
             <li v-for="(ability, index) in pokemonData.value?.abilities" :key="index"
-              class="dataInfoContainer__listItem">{{
+              class="dataInfoContainer__listItem">
+              {{
                 ability
               }}</li>
           </ul>
         </div>
       </div>
     </div>
+
     <div class="evolutionsCard">
-      <h2>Evolution Chain</h2>
+      <h2 class="evolutionCard__title">Evolution Chain</h2>
       <div class="evolutionContainer">
         <div v-for="(pokemon, index) in evolutionData" :key="index" class="evolutionContainer__card">
           <RouterLink :to="'/pokemon/' + pokemon.id">
@@ -111,6 +113,11 @@ fetchPokemonData();
 <style lang="scss">
 @use '../assets/main.scss' as *;
 
+.mainContainer {
+  width: 100%;
+  padding: 1rem;
+}
+
 .pokemonCard {
   @include flexCenter;
   flex-direction: column;
@@ -133,7 +140,9 @@ fetchPokemonData();
 
 .evolutionContainer {
   @include flexCenter;
-  gap: 1rem;
+  justify-content: space-between;
+  padding: 2rem;
+  gap: 1rem
 }
 
 .evolutionContainer__card {
@@ -142,8 +151,55 @@ fetchPokemonData();
   cursor: pointer;
 }
 
-.evolutionContainer__title {
+.evolutionCard__title {
+  width: 100%;
+  text-align: center;
   color: $yellow;
   text-transform: capitalize;
+}
+
+.evolutionContainer__title {
+  color: $ltGray;
+  text-transform: capitalize;
+}
+
+.dataContainer {
+  @include flexCenter;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.dataInfoContainer {
+  color: #000;
+  border: 4px solid $yellow;
+  background: #fff;
+  border-radius: .5rem;
+  padding: .5rem 1rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  text-align: start;
+}
+
+.dataInfoContainer__title {
+  font-weight: bold;
+}
+
+.dataInfoContainer__paragraph {
+  text-transform: capitalize;
+  font-style: italic;
+}
+
+
+.dataInfoContainer__list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.dataInfoContainer__listItem {
+  text-transform: capitalize;
+  font-style: italic;
 }
 </style>
