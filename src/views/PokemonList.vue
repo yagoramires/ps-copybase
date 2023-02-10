@@ -1,11 +1,11 @@
 <template>
   <main class="mainContainer">
     <div class="listContainer">
-      <h2 class="title">Pokemons</h2>
+      <h2 class="title">Pokémons</h2>
 
       <div>
         <ul class="list">
-          <li v-for="(pokemon, index) in pokemons" :key="index">
+          <li v-for="(pokemon, index) in pokemons" :key="index" class="list___item">
             <RouterLink :to="{
               name: 'pokemon',
               params: {
@@ -14,7 +14,7 @@
                   ''
                 ),
               },
-            }" class="list___item">
+            }">
               {{ pokemon.name }}
             </RouterLink>
           </li>
@@ -93,17 +93,38 @@ export default defineComponent({
 
 .list {
   list-style-type: none;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   padding: 0;
-  justify-items: start;
-  gap: 1rem;
+  justify-content: center;
+  gap: .5rem;
+  max-width: 600px;
 }
 
+
 .list___item {
+  width: 30%;
+  background: $yellow;
   text-transform: capitalize;
-  font-weight: 600;
+  font-weight: 500;
+  font-size: .8rem;
+  padding: 2px;
+  border-radius: .5rem;
+  text-align: center;
+  transition: all .2s;
+}
+
+.list___item:hover {
+  background: #000;
+}
+
+.list___item a {
   color: #fff;
+  font-weight: bold;
+}
+
+.list___item:hover a {
+  color: $yellow;
 }
 
 .buttonContainer {
@@ -121,11 +142,13 @@ export default defineComponent({
   background: $yellow;
   transition: all 0.3s;
   padding: 1rem;
+  font-weight: bold;
   cursor: pointer;
 }
 
 .buttonContainer__btn:hover {
-  background-color: $ltYellow;
+  background-color: #000;
+  color: $yellow
 }
 
 @media (min-width: 1024px) {
@@ -134,7 +157,12 @@ export default defineComponent({
   }
 
   .list {
-    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .list___item {
+    width: 20%;
+    font-size: 1rem;
   }
 
   .buttonContainer__btn {
