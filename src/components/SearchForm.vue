@@ -53,9 +53,10 @@ export default defineComponent({
     cursor: pointer;
 }
 
-.form__input--submit {
+.form__input--submit:hover {
     border-top-right-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
-    background: $ltYellow;
+    background: #000;
+    color: $yellow;
 }
 </style>

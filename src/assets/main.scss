@@ -1,15 +1,5 @@
 @import './base.scss';
 
-@mixin flexCenter {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-$yellow: rgb(255, 196, 0);
-$ltYellow: rgb(255, 210, 60);
-$ltGray: rgb(214, 214, 214);
-
 #app {
   width: 90%;
   @include flexCenter;
