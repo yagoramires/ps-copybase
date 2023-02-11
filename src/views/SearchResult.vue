@@ -1,35 +1,36 @@
 <template>
   <main v-if="!loading">
-    <div class="mainContainer"></div>
-    <div class="pokemonCard" v-if="pokemonData.length > 0">
-      <h1 class="pokemonCard__title">{{ `${pokemonData.value?.name} #${pokemonData.value?.id}` }}</h1>
-      <img :src="pokemonData.value?.image" alt="pokemon" class="pokemonCard__image" />
-      <div class="dataContainer">
-        <div class="dataInfoContainer">
-          <h3 class="dataInfoContainer__title">Habitat:</h3>
-          <p class="dataInfoContainer__paragraph">{{ pokemonData.value?.habitat }}</p>
-        </div>
-        <div class="dataInfoContainer">
-          <h3 class="dataInfoContainer__title">Types:</h3>
-          <ul class="dataInfoContainer__list">
-            <li v-for="(type, index) in pokemonData.value?.types" :key="index" class="dataInfoContainer__listItem">{{
-              type
-            }}</li>
-          </ul>
-        </div>
-        <div class="dataInfoContainer">
-          <h3 class="dataInfoContainer__title">Abilities:</h3>
-          <ul class="dataInfoContainer__list">
-            <li v-for="(ability, index) in pokemonData.value?.abilities" :key="index"
-              class="dataInfoContainer__listItem">
-              {{ ability }}</li>
-          </ul>
+    <div class="mainContainer" v-if="!error">
+      <div class="pokemonCard">
+        <h1 class="pokemonCard__title">{{ `${pokemonData.value?.name} #${pokemonData.value?.id}` }}</h1>
+        <img :src="pokemonData.value?.image" alt="pokemon" class="pokemonCard__image" />
+        <div class="dataContainer">
+          <div class="dataInfoContainer">
+            <h3 class="dataInfoContainer__title">Habitat:</h3>
+            <p class="dataInfoContainer__paragraph">{{ pokemonData.value?.habitat }}</p>
+          </div>
+          <div class="dataInfoContainer">
+            <h3 class="dataInfoContainer__title">Types:</h3>
+            <ul class="dataInfoContainer__list">
+              <li v-for="(type, index) in pokemonData.value?.types" :key="index" class="dataInfoContainer__listItem">{{
+                type
+              }}</li>
+            </ul>
+          </div>
+          <div class="dataInfoContainer">
+            <h3 class="dataInfoContainer__title">Abilities:</h3>
+            <ul class="dataInfoContainer__list">
+              <li v-for="(ability, index) in pokemonData.value?.abilities" :key="index"
+                class="dataInfoContainer__listItem">
+                {{ ability }}</li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="pokemonCard" v-if="error">
-      <p style="color:white">{{ error }}</p>
+      <div class="pokemonCard" v-if="error">
+        <p style="color:white">{{ error }}</p>
+      </div>
     </div>
 
     <div v-if="evolutionData.length > 0" class="evolutionsCard">
