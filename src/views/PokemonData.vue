@@ -1,57 +1,66 @@
 <template>
-  <main v-if="!loading" class="mainContainer">
-    <div class="pokemonCard">
-      <h1 class="pokemonCard__title">{{ `${pokemonData.value?.name} #${pokemonData.value?.id}` }}</h1>
-      <img :src="pokemonData.value?.image" alt="pokemon" class="pokemonCard__image" />
-      <div class="dataContainer">
-        <div class="dataInfoContainer">
-          <h3 class="dataInfoContainer__title">Habitat:</h3>
-          <p class="dataInfoContainer__paragraph">{{ pokemonData.value?.habitat }}</p>
-        </div>
-        <div class="dataInfoContainer">
-          <h3 class="dataInfoContainer__title">Types:</h3>
-          <ul class="dataInfoContainer__list">
-            <li v-for="(type, index) in pokemonData.value?.types" :key="index" class="dataInfoContainer__listItem">{{
-              type
-            }}</li>
-          </ul>
-        </div>
-        <div class="dataInfoContainer">
-          <h3 class="dataInfoContainer__title">Abilities:</h3>
-          <ul class="dataInfoContainer__list">
-            <li v-for="(ability, index) in pokemonData.value?.abilities" :key="index"
-              class="dataInfoContainer__listItem">
-              {{
-                ability
+  <main>
+    <div v-if="!loading" class="mainContainer">
+      <div class="pokemonCard">
+        <h1 class="pokemonCard__title">{{ `${pokemonData.value?.name} #${pokemonData.value?.id}` }}</h1>
+        <img :src="pokemonData.value?.image" alt="pokemon" class="pokemonCard__image" />
+        <div class="dataContainer">
+          <div class="dataInfoContainer">
+            <h3 class="dataInfoContainer__title">Habitat:</h3>
+            <p class="dataInfoContainer__paragraph">{{ pokemonData.value?.habitat }}</p>
+          </div>
+          <div class="dataInfoContainer">
+            <h3 class="dataInfoContainer__title">Types:</h3>
+            <ul class="dataInfoContainer__list">
+              <li v-for="(type, index) in pokemonData.value?.types" :key="index" class="dataInfoContainer__listItem">{{
+                type
               }}</li>
-          </ul>
+            </ul>
+          </div>
+          <div class="dataInfoContainer">
+            <h3 class="dataInfoContainer__title">Abilities:</h3>
+            <ul class="dataInfoContainer__list">
+              <li v-for="(ability, index) in pokemonData.value?.abilities" :key="index"
+                class="dataInfoContainer__listItem">
+                {{
+                  ability
+                }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="evolutionData.length > 0" class="evolutionsCard">
+        <h2 class="evolutionCard__title">Evolution Chain</h2>
+        <div class="evolutionContainer">
+          <div v-for="(pokemon, index) in evolutionData" :key="index" class="evolutionContainer__card">
+            <RouterLink :to="'/pokemon/' + pokemon.id">
+              <img :src="pokemon.image" alt="pokemon" class="evolutionContainer__image" />
+              <h2 class="evolutionContainer__title">{{ pokemon.name }}</h2>
+            </RouterLink>
+          </div>
         </div>
       </div>
     </div>
 
-    <div v-if="evolutionData.length > 0" class="evolutionsCard">
-      <h2 class="evolutionCard__title">Evolution Chain</h2>
-      <div class="evolutionContainer">
-        <div v-for="(pokemon, index) in evolutionData" :key="index" class="evolutionContainer__card">
-          <RouterLink :to="'/pokemon/' + pokemon.id">
-            <img :src="pokemon.image" alt="pokemon" class="evolutionContainer__image" />
-            <h2 class="evolutionContainer__title">{{ pokemon.name }}</h2>
-          </RouterLink>
-        </div>
-      </div>
+    <div v-if="loading" class="loadingContainer">
+      <Loading />
     </div>
   </main>
+
 </template>
 
 <script >
 import { defineComponent, ref, reactive, onMounted, onUpdated } from 'vue';
-import { useRoute, useRouter, RouterLink } from 'vue-router';
+import { useRoute, RouterLink } from 'vue-router';
+import Loading from '../components/Loading.vue';
 import axios from 'axios';
 
 const baseUrl = 'https://pokeapi.co/api/v2';
 
 export default defineComponent({
   name: 'PokemonList',
+  components: { Loading, RouterLink },
   setup() {
     const route = useRoute();
     let oldId = route.params.id
@@ -214,5 +223,11 @@ export default defineComponent({
 .dataInfoContainer__listItem {
   text-transform: capitalize;
   font-style: italic;
+}
+
+.loadingContainer {
+  width: 100%;
+  height: 30vh;
+  @include flexCenter;
 }
 </style>

@@ -1,73 +1,89 @@
 <template>
-  <main class="mainContainer">
-    <div class="listContainer">
-      <h2 class="title">Pokémons</h2>
+  <main>
+    <div class="mainContainer" v-if="!loading">
+      <div class="listContainer">
+        <h2 class="title">Pokémons</h2>
+        <div>
+          <ul class="list">
+            <li v-for="(pokemon, index) in pokemons" :key="index" class="list___item">
+              <RouterLink :to="{
+                name: 'pokemon',
+                params: {
+                  id: pokemon.url.replace(
+                    'https://pokeapi.co/api/v2/pokemon/',
+                    ''
+                  ),
+                },
+              }">
+                {{ pokemon.name }}
+              </RouterLink>
+            </li>
+          </ul>
+        </div>
 
-      <div>
-        <ul class="list">
-          <li v-for="(pokemon, index) in pokemons" :key="index" class="list___item">
-            <RouterLink :to="{
-              name: 'pokemon',
-              params: {
-                id: pokemon.url.replace(
-                  'https://pokeapi.co/api/v2/pokemon/',
-                  ''
-                ),
-              },
-            }">
-              {{ pokemon.name }}
-            </RouterLink>
-          </li>
-        </ul>
+        <div class="buttonContainer">
+          <button v-if="prevPage !== null && !fetchingPokemon" @click="loadPrevPage" class="buttonContainer__btn">
+            Voltar
+          </button>
+          <button v-if="nextPage !== null && !fetchingPokemon" @click="loadNextPage" class="buttonContainer__btn" v>
+            Próxima
+          </button>
+          <div class="buttonContainer__btn" v-if="fetchingPokemon">...</div>
+        </div>
       </div>
-
-      <div class="buttonContainer">
-        <button v-if="prevPage !== null" @click="loadPrevPage" class="buttonContainer__btn">
-          {{ fetchingPokemon? '...': 'Voltar' }}
-        </button>
-        <button @click="loadNextPage" class="buttonContainer__btn">
-          {{ fetchingPokemon? '...': 'Próxima' }}
-        </button>
-      </div>
+    </div>
+    <div v-if="loading" class="loadingContainer">
+      <Loading />
     </div>
   </main>
 </template>
 
 <script>
 import { defineComponent, ref, onMounted } from 'vue';
+import Loading from '../components/Loading.vue';
+import { RouterLink } from 'vue-router';
 import api from '@/services/api';
 import axios from 'axios';
 
 export default defineComponent({
   name: 'PokemonList',
+  components: { Loading, RouterLink },
   setup() {
     const pokemons = ref([]);
-    let nextPage = ref('');
-    let prevPage = ref('');
+    const loading = ref(false)
+    const fetchingPokemon = ref(false)
+    const nextPage = ref('');
+    const prevPage = ref('');
     const fetchPokemons = async () => {
+      loading.value = true
       const fetchData = await api.get('/pokemon');
       nextPage.value = fetchData.data.next;
       prevPage.value = fetchData.data.previous;
       pokemons.value = fetchData.data.results;
+      loading.value = false
     };
 
     const loadNextPage = async () => {
+      fetchingPokemon.value = true
       const fetchData = await axios.get(nextPage.value);
       pokemons.value = fetchData.data.results;
       nextPage.value = fetchData.data.next;
       prevPage.value = fetchData.data.previous;
+      fetchingPokemon.value = false
     };
 
     const loadPrevPage = async () => {
+      fetchingPokemon.value = true
       const fetchData = await axios.get(prevPage.value);
       pokemons.value = fetchData.data.results;
       nextPage.value = fetchData.data.next;
       prevPage.value = fetchData.data.previous;
+      fetchingPokemon.value = false
     };
 
     onMounted(fetchPokemons);
 
-    return { pokemons, loadNextPage, loadPrevPage, prevPage, nextPage };
+    return { pokemons, loadNextPage, loadPrevPage, prevPage, nextPage, loading, fetchingPokemon };
   },
 });
 </script>
@@ -149,6 +165,12 @@ export default defineComponent({
 .buttonContainer__btn:hover {
   background-color: #000;
   color: $yellow
+}
+
+.loadingContainer {
+  width: 100%;
+  height: 30vh;
+  @include flexCenter;
 }
 
 @media (min-width: 1024px) {

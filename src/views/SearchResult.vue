@@ -1,5 +1,6 @@
 <template>
-  <main v-if="!loading" class="mainContainer">
+  <main v-if="!loading">
+    <div class="mainContainer"></div>
     <div class="pokemonCard">
       <h1 class="pokemonCard__title">{{ `${pokemonData.value?.name} #${pokemonData.value?.id}` }}</h1>
       <img :src="pokemonData.value?.image" alt="pokemon" class="pokemonCard__image" />
@@ -38,20 +39,25 @@
         </div>
       </div>
     </div>
+    <div v-if="loading" class="loadingContainer">
+      <Loading />
+    </div>
   </main>
 </template>
 
 <script>
 import { defineComponent, ref, reactive, onMounted, onUpdated } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, RouterLink } from 'vue-router';
+import Loading from '../components/Loading.vue';
 import axios from 'axios';
 
 const baseUrl = 'https://pokeapi.co/api/v2';
 
 export default defineComponent({
   name: 'PokemonList',
+  components: { Loading, RouterLink },
   setup() {
-    const route = useRoute();
+    const route = useRoute()
     let oldId = route.params.id
     const loading = ref(false);
     const pokemonData = reactive({});
@@ -213,5 +219,11 @@ export default defineComponent({
 .dataInfoContainer__listItem {
   text-transform: capitalize;
   font-style: italic;
+}
+
+.loadingContainer {
+  width: 100%;
+  height: 30vh;
+  @include flexCenter;
 }
 </style>
