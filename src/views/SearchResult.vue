@@ -1,7 +1,7 @@
 <template>
   <main v-if="!loading">
-    <div class="mainContainer" v-if="!error">
-      <div class="pokemonCard">
+    <div class="mainContainer">
+      <div class="pokemonCard" v-if="!error">
         <h1 class="pokemonCard__title">{{ `${pokemonData.value?.name} #${pokemonData.value?.id}` }}</h1>
         <img :src="pokemonData.value?.image" alt="pokemon" class="pokemonCard__image" />
         <div class="dataContainer">
