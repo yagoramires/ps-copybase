@@ -1,7 +1,7 @@
 <template>
   <main v-if="!loading">
     <div class="mainContainer"></div>
-    <div class="pokemonCard">
+    <div class="pokemonCard" v-if="pokemonData.length > 0">
       <h1 class="pokemonCard__title">{{ `${pokemonData.value?.name} #${pokemonData.value?.id}` }}</h1>
       <img :src="pokemonData.value?.image" alt="pokemon" class="pokemonCard__image" />
       <div class="dataContainer">
@@ -26,6 +26,10 @@
           </ul>
         </div>
       </div>
+    </div>
+
+    <div class="pokemonCard" v-if="error">
+      <p style="color:white">{{ error }}</p>
     </div>
 
     <div v-if="evolutionData.length > 0" class="evolutionsCard">
@@ -62,21 +66,30 @@ export default defineComponent({
     const loading = ref(false);
     const pokemonData = reactive({});
     const evolutionData = ref([]);
+    const error = ref('');
 
     const fetchPokemonData = async () => {
       loading.value = true;
-      const fetchData = await axios.get(`${baseUrl}/pokemon/${route.params.id}`);
+      error.value = '';
 
-      const data = {
-        id: fetchData.data.id,
-        name: fetchData.data.name,
-        abilities: fetchData.data.abilities.map(ability => ability.ability.name),
-        image: fetchData.data.sprites.front_default,
-        types: fetchData.data.types.map(type => type.type.name),
-      };
+      try {
 
-      fetchSpecies(fetchData.data.species.url, data);
-      loading.value = false;
+        const fetchData = await axios.get(`${baseUrl}/pokemon/${route.params.id}`);
+
+        const data = {
+          id: fetchData.data.id,
+          name: fetchData.data.name,
+          abilities: fetchData.data.abilities.map(ability => ability.ability.name),
+          image: fetchData.data.sprites.front_default,
+          types: fetchData.data.types.map(type => type.type.name),
+        };
+
+        fetchSpecies(fetchData.data.species.url, data);
+        loading.value = false;
+      } catch (e) {
+        error.value = 'Nenhum pokémon encontrado!'
+        loading.value = false;
+      }
     };
 
     const fetchSpecies = async (url, data) => {
@@ -123,7 +136,7 @@ export default defineComponent({
       }
     });
 
-    return { pokemonData, loading, evolutionData };
+    return { pokemonData, loading, evolutionData, error };
   },
 });
 </script>

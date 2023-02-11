@@ -17,7 +17,7 @@ export default defineComponent({
         const router = useRouter()
         const submitForm = (e) => {
             e.preventDefault();
-            router.push(`/search/${search.value}`)
+            router.push(`/search/${search.value.toLowerCase()}`)
             search.value = ''
         }
         return { search, submitForm };
